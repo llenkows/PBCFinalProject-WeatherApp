@@ -52,6 +52,10 @@ const ForecastScreen = ({ latitude, longitude }) => {
     fetchForecast();
   };
 
+  const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
+
+  const convertToInches = (mm) => (mm / 25.4);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>5-Day Forecast</Text>
@@ -78,10 +82,10 @@ const ForecastScreen = ({ latitude, longitude }) => {
             <View key={date} style={styles.forecastItem}>
               <Text style={styles.date}>{new Date(date).toLocaleDateString()}</Text>
               <Text style={styles.temp}>
-                🌡️ {forecast.temperature_2m_min[index]}°C - {forecast.temperature_2m_max[index]}°C
+                🌡️ {convertToFahrenheit(forecast.temperature_2m_min[index]).toFixed(1)}°F - {convertToFahrenheit(forecast.temperature_2m_max[index]).toFixed(1)}°F
               </Text>
               <Text style={styles.precip}>
-                ☔ Precipitation: {forecast.precipitation_sum[index]} mm
+                ☔ Precipitation: {convertToInches(forecast.precipitation_sum[index]).toFixed(2)} in
               </Text>
             </View>
           ))}

@@ -50,6 +50,12 @@ export default function WeatherScreen() {
 
   const convertToFahrenheit = (celsius) => (celsius * 9) / 5 + 32;
 
+  const convertToMPH = (kmph) => (kmph * (0.621371));
+
+  const getWindChillStatus = (temperature, windspeed) => {
+    return (35.74) + (0.6215)*(temperature) - (35.75)*(windspeed**0.16) + (0.4275)*(temperature)*(windspeed**0.16)
+  }
+
   const getPrecipitationStatus = (precipitation) => {
     if (precipitation > 1) {
       return "❄️ Snowing";
@@ -88,7 +94,8 @@ export default function WeatherScreen() {
       {weather && !loading && (
         <View style={styles.weatherContainer}>
           <Text style={styles.weatherText}>🌡️ Temperature: {convertToFahrenheit(weather.temperature).toFixed(1)}°F</Text>
-          <Text style={styles.weatherText}>💨 Wind Speed: {weather.windspeed} km/h</Text>
+          <Text style={styles.weatherText}>💨 Wind Speed: {convertToMPH(weather.windspeed).toFixed(1)} MPH</Text>
+          <Text style={styles.weatherText}>🧮 Real Feel Temp.: {getWindChillStatus(convertToFahrenheit(weather.temperature).toFixed(1), convertToMPH(weather.windspeed)).toFixed(1)}°F</Text>
           <Text style={styles.weatherText}>{getPrecipitationStatus(weather.precipitation)}</Text>
           <View style={styles.recommendationContainer}>
             <Text style={styles.recommendation}>👉 {getRecommendation(convertToFahrenheit(weather.temperature), weather.windspeed, weather.precipitation)}</Text>
