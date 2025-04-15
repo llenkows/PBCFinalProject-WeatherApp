@@ -19,6 +19,15 @@ export default function RootLayout() {
           headerTintColor: '#fff'
         }} 
       />
+      <Stack.Screen 
+        name="hourly" 
+        options={{ 
+          title: 'Hourly Forecast',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#4A90E2' },
+          headerTintColor: '#fff'
+        }} 
+      />
     </Stack>
   );
 }

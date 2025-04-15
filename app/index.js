@@ -103,10 +103,10 @@ export default function WeatherScreen() {
         </View>
       )}
       
-      {/* Forecast Button */}
       {userLocation && (
+      <View style={styles.forecastButtonRow}>
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, styles.smallButton]}
           onPress={() => router.push({
             pathname: '/forecast',
             params: {
@@ -115,9 +115,23 @@ export default function WeatherScreen() {
             }
           })}
         >
-          <Text style={styles.buttonText}>See 5-Day Forecast</Text>
+          <Text style={styles.buttonText}>5-Day</Text>
         </TouchableOpacity>
-      )}
+
+        <TouchableOpacity
+          style={[styles.button, styles.smallButton]}
+          onPress={() => router.push({
+            pathname: '/hourly',
+            params: {
+              latitude: userLocation.coords.latitude.toString(),
+              longitude: userLocation.coords.longitude.toString()
+            }
+          })}
+        >
+          <Text style={styles.buttonText}>Hourly</Text>
+        </TouchableOpacity>
+      </View>
+    )}
     </View>
   );
 }
@@ -179,4 +193,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FF5733",
   },
+  forecastButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    width: '80%',
+  },
+  smallButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },  
 });
