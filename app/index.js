@@ -7,6 +7,7 @@ import axios from "axios";
 export default function WeatherScreen() {
   const router = useRouter();
   const [weather, setWeather] = useState(null);
+  const [uvIndex, setUvIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState(null);
@@ -36,10 +37,19 @@ export default function WeatherScreen() {
 
       // Get weather data
       const weatherResponse = await axios.get(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&precipitation=true`
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&precipitation=true&hourly=uv_index&timezone=auto`
       );
 
       setWeather(weatherResponse.data.current_weather);
+      
+      const now = new Date();
+      const currentHourLocal = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0") + "T" + String(now.getHours()).padStart(2, "0");
+      const uvIndexTimeArray = weatherResponse.data.hourly.time;
+      const uvIndexArray = weatherResponse.data.hourly.uv_index;
+      const uvIndexIndex = uvIndexTimeArray.findIndex(time => time.startsWith(currentHourLocal));
+      const currentUvIndex = uvIndexIndex !== -1 ? uvIndexArray[uvIndexIndex] : "N/A";
+      setUvIndex(currentUvIndex);
+
     } catch (err) {
       console.error("Error fetching weather:", err);
       setError("Could not retrieve weather. Check your internet connection.");
@@ -70,7 +80,9 @@ export default function WeatherScreen() {
       return "🥶 It's cold! Wear a jacket.";
     } else if (temperature > 85) {
       return "🔥 It's hot! Stay hydrated.";
-    } else if (windspeed > 15) {
+    } else if (uvIndex > 5) {
+      return "🧴 UV is HIGH! Apply sunscreen."
+    }else if (windspeed > 15) {
       return "💨 It's windy! Secure loose items.";
     } else if (precipitation > 0) {
       return "🌧️ Bring an umbrella!";
@@ -95,8 +107,9 @@ export default function WeatherScreen() {
         <View style={styles.weatherContainer}>
           <Text style={styles.weatherText}>🌡️ Temperature: {convertToFahrenheit(weather.temperature).toFixed(1)}°F</Text>
           <Text style={styles.weatherText}>💨 Wind Speed: {convertToMPH(weather.windspeed).toFixed(1)} MPH</Text>
-          <Text style={styles.weatherText}>🧮 Real Feel Temp.: {getWindChillStatus(convertToFahrenheit(weather.temperature).toFixed(1), convertToMPH(weather.windspeed)).toFixed(1)}°F</Text>
+          <Text style={styles.weatherText}>🤒 Real Feel Temp.: {getWindChillStatus(convertToFahrenheit(weather.temperature).toFixed(1), convertToMPH(weather.windspeed)).toFixed(1)}°F</Text>
           <Text style={styles.weatherText}>{getPrecipitationStatus(weather.precipitation)}</Text>
+          <Text style={styles.weatherText}> 🌞 UV Index: {uvIndex.toFixed(1)}</Text>
           <View style={styles.recommendationContainer}>
             <Text style={styles.recommendation}>👉 {getRecommendation(convertToFahrenheit(weather.temperature), weather.windspeed, weather.precipitation)}</Text>
           </View>
