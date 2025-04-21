@@ -13,7 +13,7 @@ const HourlyForecastScreen = ({ latitude, longitude }) => {
   const fetchHourlyForecast = async () => {
     try {
       const response = await axios.get(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode,windspeed_10m&forecast_days=1&timezone=auto`
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode,windspeed_10m,uv_index&forecast_days=1&timezone=auto`
       );
       const hourly = response.data.hourly;
 
@@ -22,6 +22,7 @@ const HourlyForecastScreen = ({ latitude, longitude }) => {
         temperature: hourly.temperature_2m[index],
         windspeed: hourly.windspeed_10m[index],
         precipitation: hourly.precipitation[index],
+        uv_index: hourly.uv_index[index],
       }));
 
       setHourlyData(formattedData);
@@ -41,6 +42,7 @@ const renderItem = ({ item }) => {
   const tempF = convertToFahrenheit(item.temperature).toFixed(1);
   const precipIn = convertToInches(item.precipitation).toFixed(2);
   const windMPH = convertToMPH(item.windspeed).toFixed(1);
+  const uvIndex = item.uv_index ?? 'N/A';
 
   return (
     <View style={styles.item}>
@@ -49,6 +51,7 @@ const renderItem = ({ item }) => {
       </Text>
       <Text style={styles.text}>🌡️ {tempF}°F</Text>
       <Text style={styles.text}>💨 {windMPH} mph</Text>
+      <Text style={styles.text}>🌞 UV Index: {uvIndex.toFixed(0)}</Text>
       <Text style={styles.text}>🌧️ {precipIn} in</Text>
     </View>
   );
