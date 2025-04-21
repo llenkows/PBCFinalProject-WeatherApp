@@ -109,7 +109,7 @@ export default function WeatherScreen() {
           <Text style={styles.weatherText}>💨 Wind Speed: {convertToMPH(weather.windspeed).toFixed(1)} MPH</Text>
           <Text style={styles.weatherText}>🤒 Real Feel Temp.: {getWindChillStatus(convertToFahrenheit(weather.temperature).toFixed(1), convertToMPH(weather.windspeed)).toFixed(1)}°F</Text>
           <Text style={styles.weatherText}>{getPrecipitationStatus(weather.precipitation)}</Text>
-          <Text style={styles.weatherText}> 🌞 UV Index: {uvIndex.toFixed(1)}</Text>
+          <Text style={styles.weatherText}> 🌞 UV Index: {uvIndex.toFixed(0)}</Text>
           <View style={styles.recommendationContainer}>
             <Text style={styles.recommendation}>👉 {getRecommendation(convertToFahrenheit(weather.temperature), weather.windspeed, weather.precipitation)}</Text>
           </View>

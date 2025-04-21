@@ -38,10 +38,15 @@ const HourlyForecastScreen = ({ latitude, longitude }) => {
 
   const convertToMPH = (kmph) => (kmph * 0.621371);
 
+  const getWindChillStatus = (temperature, windspeed) => {
+    return (35.74) + (0.6215)*(temperature) - (35.75)*(windspeed**0.16) + (0.4275)*(temperature)*(windspeed**0.16)
+  }
+
 const renderItem = ({ item }) => {
   const tempF = convertToFahrenheit(item.temperature).toFixed(1);
   const precipIn = convertToInches(item.precipitation).toFixed(2);
   const windMPH = convertToMPH(item.windspeed).toFixed(1);
+  const realFeel = getWindChillStatus(tempF, windMPH).toFixed(1);
   const uvIndex = item.uv_index ?? 'N/A';
 
   return (
@@ -51,6 +56,7 @@ const renderItem = ({ item }) => {
       </Text>
       <Text style={styles.text}>🌡️ {tempF}°F</Text>
       <Text style={styles.text}>💨 {windMPH} mph</Text>
+      <Text style={styles.text}>🤒 {realFeel}°F</Text>
       <Text style={styles.text}>🌞 UV Index: {uvIndex.toFixed(0)}</Text>
       <Text style={styles.text}>🌧️ {precipIn} in</Text>
     </View>
